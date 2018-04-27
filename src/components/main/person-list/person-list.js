@@ -5,9 +5,6 @@ import { Feature } from 'components/main/person-list/feature';
 import './person-list.css';
 
 class PersonList extends React.Component {
-    constructor(props) {
-        super(props);
-    }
 
     get personList() {
 

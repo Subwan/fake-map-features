@@ -2,14 +2,11 @@ import React from 'react';
 
 import './person-list.css';
 
-export  class Feature extends React.Component {
-    constructor(props) {
-        super(props);
-    }
+export class Feature extends React.Component {
 
     render() {
         const item = this.props.item;
-        return(
+        return (
             <li className="feature">
                 <img className="feature__avatar" src={item.avatar} alt='avatar' />
                 <div className="feature__info">

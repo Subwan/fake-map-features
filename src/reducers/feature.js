@@ -9,7 +9,7 @@ const initialState = {
 const ACTION_HANDLER = {
 
     [GET_FEATURES_SUCCESS]: (state, action) => {
-        return ({... state, features: action.features});
+        return ({ ...state, features: action.features });
     }
 }
 

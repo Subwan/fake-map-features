@@ -5,9 +5,6 @@ import { getFeatures } from 'actions/feature';
 import PersonList from 'components/main/person-list/person-list';
 
 class Main extends React.Component {
-    constructor(props) {
-        super(props)
-    }
 
     componentDidMount() {
         this.props.getFeatures();
