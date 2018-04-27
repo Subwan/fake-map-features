@@ -2,6 +2,7 @@
     width: 400px;
     height: 100vh;
     overflow: hidden;
+    margin-left: 10px;
 }
 
 .person-list__list {

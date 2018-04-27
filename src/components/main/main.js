@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { getFeatures } from 'actions/feature';
 
 import PersonList from 'components/main/person-list/person-list';
+import OpenLayersMap from 'components/main/map/map';
 
 class Main extends React.Component {
 
@@ -12,7 +13,10 @@ class Main extends React.Component {
 
     render() {
         return (
-            <PersonList />
+            <div>
+                <OpenLayersMap />
+                <PersonList />
+            </div>
         );
     }
 }
