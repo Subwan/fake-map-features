@@ -1,8 +1,7 @@
 .person-list {
-    width: 400px;
+    width: 20%;
     height: 100vh;
     overflow: hidden;
-    margin-left: 10px;
 }
 
 .person-list__list {

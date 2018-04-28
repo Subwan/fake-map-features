@@ -5,6 +5,8 @@ import { getFeatures } from 'actions/feature';
 import PersonList from 'components/main/person-list/person-list';
 import OpenLayersMap from 'components/main/map/map';
 
+import './main.css';
+
 class Main extends React.Component {
 
     componentDidMount() {
@@ -13,7 +15,7 @@ class Main extends React.Component {
 
     render() {
         return (
-            <div>
+            <div className="main-container">
                 <OpenLayersMap />
                 <PersonList />
             </div>
