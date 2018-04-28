@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import ol from 'ol';
 import Tile from 'ol/layer/tile';
 import OSM from 'ol/source/osm';
 import Map from 'ol/map';
@@ -24,9 +23,13 @@ class OpenLayersMap extends React.Component {
             source: new Vector(),
         });
 
+        this.overlay = null;
+        this.map = null;
         this.state = {
             featureId: null,
         }
+
+        this.findFeatureById = this.findFeatureById.bind(this);
     }
 
     componentDidMount() {
@@ -34,17 +37,17 @@ class OpenLayersMap extends React.Component {
             const mapOSM = new Tile({
                 source: new OSM()
             });
-            const overlay = new Overlay({
+            this.overlay = new Overlay({
                 element: document.getElementById('popup'),
                 autoPan: true,
                 autoPanAnimation: {
                     duration: 250
                 }
             });
-            const map = new Map({
+            this.map = new Map({
                 target: 'map',
                 layers: [mapOSM, this.vector],
-                overlays: [overlay],
+                overlays: [this.overlay],
                 loadTilesWhileAnimating: true,
                 view: new View({
                     center: [0, 0],
@@ -52,17 +55,17 @@ class OpenLayersMap extends React.Component {
                     zoom: 4
                 })
             });
-            map.on('click', (e) => {
-                let features = map.getFeaturesAtPixel(e.pixel);
+            this.map.on('click', (e) => {
+                let features = this.map.getFeaturesAtPixel(e.pixel);
                 if (features) {
                     let coordinate = features[0].getGeometry().getCoordinates();
                     let id = features[0].getId();
                     this.setState({
                         featureId: id,
                     })
-                    overlay.setPosition(coordinate);
+                    this.overlay.setPosition(coordinate);
                 } else {
-                    overlay.setPosition(undefined);
+                    this.overlay.setPosition(undefined);
                     return false;
                 }
             });
@@ -72,6 +75,16 @@ class OpenLayersMap extends React.Component {
     }
 
     componentWillReceiveProps(props) {
+        let id = props.activeFeature;
+        if (id) {
+            this.setState({
+                featureId: id
+            })
+            let coordinate = this.findFeatureById(id).geometry.coordinates;
+            this.overlay.setPosition(coordinate);
+            this.map.getView().animate({center: coordinate, zoom: 10});
+        }
+
         props.features.forEach((item) => {
             let feature = new Feature({
                 geometry: new Point(item.geometry.coordinates),
@@ -87,10 +100,14 @@ class OpenLayersMap extends React.Component {
         });
     }
 
-    get popup() {
-        let feature = this.props.features.find((item) => {
-            return item.id === this.state.featureId
+    findFeatureById(id) {
+        return this.props.features.find((item) => {
+            return item.id === id;
         });
+    }
+
+    get popup() {
+        let feature = this.findFeatureById(this.state.featureId)
         return (
             <div className="popup">
                 <div className="popup__name">{feature.properties.userName}</div>
@@ -114,6 +131,7 @@ class OpenLayersMap extends React.Component {
 function mapStateToProps(state) {
     return {
         features: state.featureReducer.features,
+        activeFeature: state.featureReducer.activeFeature,
     }
 
 }

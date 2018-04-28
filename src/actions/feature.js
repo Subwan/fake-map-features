@@ -1,13 +1,14 @@
 import axios from 'axios'
 import {
     GET_FEATURES_SUCCESS,
+    SET_ACTIVE_FEATURE,
 } from 'reducers/constants';
 
 
 export function getFeaturesSuccess(features) {
     return {
         type: GET_FEATURES_SUCCESS,
-        features,
+        features
     }
 }
 
@@ -21,5 +22,12 @@ export function getFeatures() {
             .catch((error) => {
                 console.log(error);
             })
+    }
+}
+
+export function setActiveFeature(id) {
+    return {
+        type: SET_ACTIVE_FEATURE,
+        id
     }
 }

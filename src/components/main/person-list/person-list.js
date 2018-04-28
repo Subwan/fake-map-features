@@ -2,14 +2,18 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import { Feature } from 'components/main/person-list/feature';
+import { setActiveFeature } from 'actions/feature';
 import './person-list.css';
 
 class PersonList extends React.Component {
 
-    get personList() {
+    onClick(id) {
+        if (id) this.props.setActiveFeature(id);
+    }
 
+    get personList() {
         return this.props.features.map((item) => {
-            return <Feature key={item.id} item={item.properties} />
+            return <Feature key={item.id} item={item.properties} onClick={(id) => this.onClick(id)} />
         });
     }
 
@@ -30,4 +34,12 @@ function mapStateToProps(state) {
     }
 }
 
-export default connect(mapStateToProps)(PersonList);
+function mapDispatchToProps(dispatch) {
+    return {
+        setActiveFeature: (id) => {
+            dispatch(setActiveFeature(id));
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PersonList);
