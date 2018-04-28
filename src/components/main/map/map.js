@@ -5,39 +5,37 @@ import Tile from 'ol/layer/tile';
 import OSM from 'ol/source/osm';
 import Map from 'ol/map';
 import VectorLayer from 'ol/layer/vector';
-import Vector from 'ol/source/vector'
-import Style from 'ol/style/style'
-import Icon from 'ol/style/icon'
+import Vector from 'ol/source/vector';
+import Style from 'ol/style/style';
+import Fill from 'ol/style/fill';
 import View from 'ol/view';
+import Feature from 'ol/feature';
+import Point from 'ol/geom/point';
+import Circle from 'ol/style/circle';
 
 import './map.css';
 
 class OpenLayersMap extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.vector = new VectorLayer({
+            source: new Vector(),
+        })
+    }
 
     componentDidMount() {
-        console.log('2');
         try {
             const mapOSM = new Tile({
                 source: new OSM()
             });
-            let vector = new VectorLayer({
-                source: new Vector(),
-                style: new Style({
-                    image: new Icon({
-                        anchor: [0.5, 46],
-                        anchorXUnits: 'fraction',
-                        anchorYUnits: 'pixels',
-                        opacity: 0.95,
-                        src: 'https://openlayers.org/en/v4.4.2/examples/data/icon.png'
-                    })
-                })
-            })
             const map = new Map({
                 target: 'map',
-                layers: [mapOSM, vector],
+                layers: [mapOSM, this.vector],
                 loadTilesWhileAnimating: true,
                 view: new View({
-                    center: [949282, 6002552],
+                    center: [0, 0],
+                    projection: 'EPSG:4326',
                     zoom: 4
                 })
             });
@@ -46,8 +44,23 @@ class OpenLayersMap extends React.Component {
         }
     }
 
+    componentWillReceiveProps(props) {
+        props.features.forEach((item) => {
+            let feature = new Feature({
+                geometry: new Point(item.geometry.coordinates),
+            })
+            feature.setId(item.id);
+            feature.setStyle(new Style({
+                image: new Circle({
+                    fill: new Fill({color: item.properties.color}),
+                    radius: 5,
+                })
+            }))
+            this.vector.getSource().addFeature(feature);
+        });
+    }
+
     render() {
-        console.log('1');
         return (
             <div id="map" className="map" />
         );
